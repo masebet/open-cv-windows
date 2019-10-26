@@ -1,0 +1,6 @@
+https://nodejs.org/dist/v12.13.0/node-v12.13.0-x64.msi
+  npm install -g firebase-tools
+  firebase login
+  firebase list
+  firebase deploy
+https://cdn.mysql.com//Downloads/MySQLInstaller/mysql-installer-web-community-8.0.18.0.msi
