@@ -3,5 +3,6 @@ https://nodejs.org/dist/v12.13.0/node-v12.13.0-x64.msi
   firebase login
   firebase list
 https://medium.com/skyshidigital/deploy-node-js-to-firebase-hosting-cdc44518fe21
+  firebase init
   firebase deploy
 https://cdn.mysql.com//Downloads/MySQLInstaller/mysql-installer-web-community-8.0.18.0.msi
