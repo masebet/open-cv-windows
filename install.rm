@@ -10,3 +10,17 @@ https://stackoverflow.com/questions/372885/how-do-i-connect-to-a-mysql-database-
 https://www.sitepoint.com/how-to-install-mysql/
 https://makitweb.com/fetch-records-from-mysql-database-with-vue-js-and-php/
 http://www.phpmyadmin.co/
+https://pynative.com/install-mysql-connector-python/
+  pip install mysql-connector-python
+http://www.zbeanztech.com/blog/important-mysql-commands
+  mysql -h hostname -u username -ppassword
+  create database [databasename]
+  show databases;
+  use [db name];
+  show tables;
+  describe [table name];
+  drop database [database name];
+  drop table [table name];
+  SELECT * FROM [table name];
+  show columns from [table name];
+  SELECT * FROM [table name] WHERE [field name] = "value";
