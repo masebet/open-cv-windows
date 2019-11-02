@@ -28,3 +28,5 @@ http://www.zbeanztech.com/blog/important-mysql-commands
   SELECT * FROM [table name] WHERE [field name] = "value";
 http://jonathansoma.com/lede/foundations-2018/classes/selenium/selenium-windows-install/
   pip install selenium    
+https://firebase.google.com/docs/firestore/quickstart
+  pip install --upgrade firebase-admin
