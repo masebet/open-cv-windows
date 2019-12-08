@@ -30,9 +30,6 @@ class PhotoBoothApp:
 		self.root.geometry("800x450") 
 		self.panel = None
 
-
-
-
 		self.stopEvent = threading.Event()
 		self.fps = FPS().start()
 		args = {}
@@ -46,16 +43,18 @@ class PhotoBoothApp:
 		self.detector = cv2.dnn.readNetFromCaffe(self.protoPath, self.modelPath)
 		self.embedder = cv2.dnn.readNetFromTorch(args["embedding_model"])
 		self.recognizer = pickle.loads(open(args["recognizer"], "rb").read())
-		self.le = pickle.loads(open(args["le"], "rb").read())
-		
+		self.le = pickle.loads(open(args["le"], "rb").read())	
 		self.tulisan = "absen"
-		self.perintah = "normal"
+		self.buff = "nama"
 		self.img_counter = 0
+
 		self.thread = threading.Thread(target=self.absen, args=())
 		self.thread1 = threading.Thread(target=self.event, args=())
+
 		self.thread.start()
 		self.thread1.start()
-		self.root.wm_title("PyImageSearch PhotoBooth")
+
+		self.root.wm_title("A B S E N S I")
 		self.root.wm_protocol("WM_DELETE_WINDOW", self.onClose)
 
 	def videoLoop(self):
@@ -113,7 +112,6 @@ class PhotoBoothApp:
 						j = np.argmax(preds)
 						proba = preds[j]
 						name = self.le.classes_[j]
-
 						simpanData.noId=name		
 						text = "{}: {:.2f}%".format(name, proba * 100)
 						y = startY - 10 if startY - 10 > 10 else startY + 10
@@ -127,9 +125,25 @@ class PhotoBoothApp:
 				# cv2.putText(self.frame, getData("waktu"), (10,350), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
 				# cv2.putText(self.frame, getData("tangal"), (10,250), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
 				# cv2.putText(self.frame, dataDataBuff.mataKuliah, (10,50), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
-				image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+				if simpanData.noId != "unknown":
+					try:
+						keDb()
+						cv2.putText(self.frame,getNama(), (10,150), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
+						tutupDb()
+					except:
+						print("masalah")	
+				else:
+					cv2.putText(self.frame, "Scan Wajah Anda", (10,150), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2, cv2.LINE_AA)
 
-				tki.Label(self.root, text=simpanData.noId).place(x = 610, y = 40)
+				if self.buff != simpanData.noId :
+					self.buff = simpanData.noId
+					tki.Label(self.root, text="                                ").place(x = 610, y = 110)
+				else:
+					tki.Label(self.root, text=simpanData.noId).place(x = 610, y = 110)
+
+				tki.Label(self.root, text=getData("waktu")).place(x = 610, y = 70)
+				tki.Label(self.root, text=getData("tangal")).place(x = 610, y = 90)
+				image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
 				image = Image.fromarray(image)
 				image = ImageTk.PhotoImage(image)
 				if self.panel is None:
@@ -144,20 +158,53 @@ class PhotoBoothApp:
 	
 	def onClose(self):
 		self.fps.stop()
-		self.vs.stop()
 		self.stopEvent.set()
 		self.vs.stop()
 		self.root.quit()
 
-
 	def event(self):
-		buffString = tki.StringVar(self.root )
-		variable = tki.StringVar(self.root )
-		tki.Entry(self.root,textvariable = buffString).place(x = 610, y = 10)
-		tki.Button(self.root, text="Klik To Absen",command=self.inputAbsen).place(x = 610, y = 60)
-		return 0;		
-	def dataIn(self):
+		OPTIONS = [
+		"Semester 1",
+		"Semester 2",
+		"Semester 3",
+		"Semester 4",
+		"Semester 5",
+		"Semester 6",
+		"Semester 7"
+		] 
+		OPTIONS_MATKUL = [
+		"MTK",
+		"AGAMA",
+		"MK1",
+		"MK2",
+		"MK3",
+		"MK4",
+		"MK5"
+		] 
+		dataDataBuff.semester = tk.StringVar(self.root)
+		dataDataBuff.semester.set(OPTIONS[0])
+
+		dataDataBuff.mataKuliah = tk.StringVar(self.root)
+		dataDataBuff.mataKuliah.set(OPTIONS_MATKUL[0])
+
+		tki.OptionMenu(self.root, dataDataBuff.semester, *OPTIONS).place(x = 610, y = 0)
+		tki.OptionMenu(self.root, dataDataBuff.mataKuliah, *OPTIONS_MATKUL).place(x = 610, y = 30)
+		tki.Button(self.root, text="Klik To Absen",command=self.inputAbsen).place(x = 610, y = 400)
 		return 0;
+
 	def inputAbsen(self):
-		print(simpanData.noId)
+		try:
+			print(dataDataBuff.semester.get())
+			print(dataDataBuff.mataKuliah.get())
+			print(simpanData.noId)
+			print(getData("waktu"))
+			print(getData("tangal"))
+		except RuntimeError:
+			print("[INFO] caught a RuntimeError")
+		return 0;
+
+	def inputAction():
+		global buffString
+		dataDataBuff.mataKuliah.get()
+		dataDataBuff.semester.get()
 		return 0;
