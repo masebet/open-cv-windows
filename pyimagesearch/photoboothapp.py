@@ -27,13 +27,11 @@ class PhotoBoothApp:
 		self.stopEvent = None
 
 		self.root = tki.Tk()
+		self.root.geometry("800x450") 
 		self.panel = None
 
-		btn = tki.Button(self.root, text="Klik To Absen",command=self.inputAbsen).pack(side="bottom", fill="both", expand="yes", padx=10,pady=10)
-		buffString = tki.StringVar(self.root )
-		variable = tki.StringVar(self.root )
-		tki.Entry(self.root,textvariable = buffString).pack(side="left", expand="yes", padx=10,pady=10)
-		tki.Label(self.root, text="INPUT MATKUL").pack(side="left",expand="yes", padx=10,pady=10)
+
+
 
 		self.stopEvent = threading.Event()
 		self.fps = FPS().start()
@@ -54,7 +52,9 @@ class PhotoBoothApp:
 		self.perintah = "normal"
 		self.img_counter = 0
 		self.thread = threading.Thread(target=self.absen, args=())
+		self.thread1 = threading.Thread(target=self.event, args=())
 		self.thread.start()
+		self.thread1.start()
 		self.root.wm_title("PyImageSearch PhotoBooth")
 		self.root.wm_protocol("WM_DELETE_WINDOW", self.onClose)
 
@@ -114,25 +114,28 @@ class PhotoBoothApp:
 						proba = preds[j]
 						name = self.le.classes_[j]
 
-						simpanData.noId=name				
+						simpanData.noId=name		
 						text = "{}: {:.2f}%".format(name, proba * 100)
 						y = startY - 10 if startY - 10 > 10 else startY + 10
 						cv2.rectangle(self.frame, (startX, startY), (endX, endY),(0, 0, 255), 2)
 						cv2.putText(self.frame, name, (startX, y),cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+				
 				self.fps.update()
 
 				font = cv2.FONT_HERSHEY_SIMPLEX
-				cv2.putText(self.frame, self.tulisan, (10,450), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
-				cv2.putText(self.frame, getData("waktu"), (10,350), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
-				cv2.putText(self.frame, getData("tangal"), (10,250), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
-				cv2.putText(self.frame, dataDataBuff.mataKuliah, (10,50), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
+				# cv2.putText(self.frame, self.tulisan, (10,450), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
+				# cv2.putText(self.frame, getData("waktu"), (10,350), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
+				# cv2.putText(self.frame, getData("tangal"), (10,250), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
+				# cv2.putText(self.frame, dataDataBuff.mataKuliah, (10,50), font, 2, (0, 255, 0), 2, cv2.LINE_AA)
 				image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+
+				tki.Label(self.root, text=simpanData.noId).place(x = 610, y = 40)
 				image = Image.fromarray(image)
 				image = ImageTk.PhotoImage(image)
 				if self.panel is None:
 					self.panel = tki.Label(image=image)
 					self.panel.image = image
-					self.panel.pack(side="left", padx=10, pady=10)
+					self.panel.place(x = 0, y = 0)
 				else:
 					self.panel.configure(image=image)
 					self.panel.image = image
@@ -147,8 +150,14 @@ class PhotoBoothApp:
 		self.root.quit()
 
 
+	def event(self):
+		buffString = tki.StringVar(self.root )
+		variable = tki.StringVar(self.root )
+		tki.Entry(self.root,textvariable = buffString).place(x = 610, y = 10)
+		tki.Button(self.root, text="Klik To Absen",command=self.inputAbsen).place(x = 610, y = 60)
+		return 0;		
 	def dataIn(self):
 		return 0;
 	def inputAbsen(self):
-		print("absen coy")
+		print(simpanData.noId)
 		return 0;
