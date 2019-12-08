@@ -194,11 +194,18 @@ class PhotoBoothApp:
 
 	def inputAbsen(self):
 		try:
-			print(dataDataBuff.semester.get())
-			print(dataDataBuff.mataKuliah.get())
+			simpanData.semester=dataDataBuff.semester.get()
+			simpanData.matkul=dataDataBuff.mataKuliah.get()
+			print(simpanData.semester)
 			print(simpanData.noId)
 			print(getData("waktu"))
 			print(getData("tangal"))
+			simpanData.nama=getNama()
+			keDb()
+			simpanData.iSql()
+			tutupDb()
+			if dataSyncOk()>0:
+				dataSync()
 		except RuntimeError:
 			print("[INFO] caught a RuntimeError")
 		return 0;
